@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Máquina de Cartas Deluxe 💌</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Quicksand:wght@400;600&display=swap');
+
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0; padding: 0;
+    height: 100vh;
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(270deg, #ffdde1, #ee9ca7, #ffdde1);
+    background-size: 600% 600%;
+    animation: bgGradient 30s ease infinite;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #4a2c3b;
+    cursor: url('cursor-normal.cur'), auto; 
+  }
+
+  button {
+    padding: 16px 55px;
+    background: linear-gradient(135deg, #d85f85, #f9aacb);
+    border: none;
+    border-radius: 45px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    cursor: url('cursor-hover.cur'), pointer; 
+    box-shadow:
+      0 0 10px #d85f85,
+      0 0 30px #f9aacb;
+    transition:
+      background 0.3s ease,
+      transform 0.3s ease,
+      box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    z-index: 20;
+  }
+
+  button::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -60%;
+    width: 220%;
+    height: 220%;
+    background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 65%);
+    transform: rotate(30deg);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  button:hover::before {
+    opacity: 1;
+  }
+  button:hover {
+    background: linear-gradient(135deg, #b9486f, #db7aa3);
+    transform: scale(1.18);
+    box-shadow:
+      0 0 20px #b9486f,
+      0 0 40px #db7aa3;
+  }
+
+  @keyframes bgGradient {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.8rem;
+    margin: 0 0 1rem 0;
+    color: #c94f70;
+    text-shadow:
+      0 0 8px #ff8db0,
+      0 0 20px #f76e92,
+      0 0 30px #c94f70;
+    user-select: none;
+    z-index: 20;
+    letter-spacing: 2px;
+  }
+
+  .card-wrapper {
+    position: relative;
+    width: 380px;
+    margin-bottom: 30px;
+    z-index: 20;
+    cursor: default;
+  }
+
+  .card {
+    position: relative;
+    background: rgba(255,255,255,0.15);
+    border-radius: 28px;
+    padding: 40px 35px;
+    font-size: 1.35rem;
+    text-align: center;
+    color: #6f3b4f;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+      0 15px 30px rgba(255 105 180 / 0.25),
+      inset 0 0 45px rgba(255 182 193 / 0.3);
+    user-select: none;
+    transition:
+      box-shadow 0.5s ease,
+      transform 0.5s ease,
+      color 0.5s ease;
+    animation: cardAppear 0.8s ease forwards;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  /* Border animated gradient */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 30px;
+    background: linear-gradient(270deg, #ff9cc9, #ffc9db, #ff9cc9);
+    background-size: 400% 400%;
+    animation: borderGradient 6s ease infinite;
+    z-index: -1;
+  }
+
+  @keyframes borderGradient {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  .card.show {
+    color: #c94f70;
+    transform: scale(1.12);
+    box-shadow:
+      0 25px 50px rgba(255 105 180 / 0.6),
+      inset 0 0 55px rgba(255 182 193 / 0.8);
+  }
+  .card:hover {
+  transform: scale(1.08);
+  box-shadow:
+    0 18px 40px rgba(255 105 180 / 0.5),
+    inset 0 0 40px rgba(255 182 193 / 0.7);
+  cursor: url('carta.cur'), pointer;
+}
+
+  }
+
+  @keyframes cardAppear {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Partículas */
+
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    user-select: none;
+    animation-timing-function: ease-in-out;
+  }
+
+  .petal {
+    font-size: 22px;
+    color: #f7a1be;
+    animation-name: fallPetal;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  .bubble {
+    border-radius: 50%;
+    background: rgba(255, 182, 193, 0.15);
+    box-shadow: 0 0 15px 6px rgba(255, 182, 193, 0.3);
+    animation-name: floatUp;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes fallPetal {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    25% {
+      transform: translateY(30vh) rotate(60deg);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(60vh) rotate(120deg);
+      opacity: 0.7;
+    }
+    75% {
+      transform: translateY(90vh) rotate(180deg);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(120vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0.4;
+    }
+    25% {
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateY(-40vh) scale(1.1);
+      opacity: 0.6;
+    }
+    75% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(-80vh) scale(1.3);
+      opacity: 0;
+    }
+   
+}
+  
+</style>
+</head>
+<body>
+
+<h1> ⊹˚¿ ݁ ˖Mi muestra de afecto .ᐟ.ᐟ</h1>
+
+<div class="card-wrapper" id="cardWrapper">
+  <div class="card" id="card">
+⠀⠀⠀⢠⡾⠲⠶⣤⣄⣤⣤⣤⣤⡿⠛⠿⡴⠾⠟⢻⡆⠀⠄⠄
+⠀⠀⠀⣼⠁⠀⠀⠀⠉⠁⠀⢀⣿⠑⡿⣿⠿⣷⣥⣥⣷⡀⠀⠀
+⠀⠀⠀⢹⡶⠀⠀⠀⠁⠀⠀⠈⢯⣡⣿⣿⣀⣰⣿⣦⢂⡏⠀⠀
+⠀⠀⢀⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠹⣍⣭⣾⠁⠀⠀
+⠀⣀⣸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣧⣤⡀
+⠈⠉⠹⣏⡁⠀⢸⣿⠀⠀⠀⢀⡀⠀⠀⠀⣿⠆⠀⢀⣸⣇⣀⠀
+⠀⠐⠋⢻⣅⡄⢀⣀⣀⡀⠀⠯⠽⠂⢀⣀⣀⡀⠀⣤⣿⠀⠉⠀
+⠀⠀⠴⠛⠙⣳⠋⠉⠉⠙⣆⠀⠀⢰⡟⠉⠈⠙⢷⠟⠈⠙⠂⠀
+⠀⠀⠀⠀⠀⢻⣄⣠⣤⣴⠟⠛⠛⠛⢧⣤⣤⣀⡾⠀⠀⠀⠀⠀</div>
+</div>
+
+<button onclick="newCard()">Nueva cartita. 𐙚˖˚</button>
+
+<!-- Audio -->
+<audio id="sonidito" src="sonidito.mp3" preload="auto"></audio>
+
+<script>
+  const messages = [
+    "Te amo más que cualquier cosa en este mundo.",
+    "Gracias por siempre estar para mí, aunque sea difícil.",
+    "Te agradezco por todo lo que has hecho por mí.",
+    "Aunque estemos lejos, mi corazón siempre está contigo",
+    "Eres lo más preciado que tengo y no podría pedir más.",
+    "Todo lo que me has dado espero algún día devolvertelo el doble.",
+    "Gracias por darme tantas cosas y esforzarte a mejorar por mí.",
+    "Tienes más de lo que habría soñado.",
+    "Cada vez que pasas por mi mente, solo puedo imaginarme una vida contigo.",
+    "Todas las noches que hemos pasado tiempo juntos, serán más que solo recuerdos para mi.",
+    "Aunque no pueda asegurar que tu corazón siempre será mío, sí puedo asegurarte que siempre me esforzaré para ello.",
+    "Te amo.",
+    "Nunca deberías compararte con cualquier persona, porque tú tienes todo y más.",
+    "Te adoro.",
+    "Mi corazón está lleno gracias a ti.",
+    "Aunque sea dificil para ti notarlo, siempre me haces feliz con solo saber que estás presente.",
+    "Solo tenerte cerca me es suficiente.",
+    "Tu voz es lo más lindo que podría haber escuchado.",
+    "Tus ojos son lo más hermoso que he visto.",
+    "Tu alma es lo más gentil con que me he encontrado."
+  ];
+
+  function newCard() {
+    const card = document.getElementById('card');
+    card.textContent = messages[Math.floor(Math.random() * messages.length)];
+    card.classList.add('show');
+    setTimeout(() => card.classList.remove('show'), 900);
+    playPopSound();
+  }
+
+  function playPopSound() {
+    const audio = document.getElementById('sonidito');
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  // Partículas con movimiento oscilante natural
+  function createParticle() {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+
+    if (Math.random() < 0.65) {
+      particle.classList.add('petal');
+      particle.textContent = "🌸";
+      particle.style.fontSize = (18 + Math.random() * 18) + "px";
+      particle.style.left = Math.random() * 100 + "vw";
+      particle.style.top = "-30px";
+      particle.style.animationDuration = (10 + Math.random() * 12) + "s";
+      particle.style.animationDelay = Math.random() * 12 + "s";
+      particle.style.animationTimingFunction = "ease-in-out";
+      particle.style.willChange = "transform, opacity";
+    } else {
+      particle.classList.add('bubble');
+      const size = 6 + Math.random() * 14;
+      particle.style.width = size + "px";
+      particle.style.height = size + "px";
+      particle.style.left = Math.random() * 100 + "vw";
+      particle.style.top = "100vh";
+      particle.style.animationDuration = (12 + Math.random() * 10) + "s";
+      particle.style.animationDelay = Math.random() * 12 + "s";
+    }
+
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 24000);
+  }
+
+  setInterval(createParticle, 350);
+</script>
+
+</body>
+</html>
